@@ -19,18 +19,19 @@
  */
 
 const hre = require('hardhat');
+const hethers = require('@hashgraph/hethers');
 
-module.exports = async (address) => {
+module.exports = async (cAddress) => {
   const provider = new hre.ethers.providers.JsonRpcProvider(process.env.RELAY_ENDPOINT);
   const wallet = new hre.ethers.Wallet(process.env.OPERATOR_PRIVATE_KEY, provider);
-  
-  const payableAmount = hre.ethers.utils.parseEther("15.1")
-  const tokenCreator = await hre.ethers.getContractAt('TokenCreateContract', address, wallet);
-  const tokenCreateTx = await tokenCreator.createFungibleTokenPublic({value: payableAmount });
-  const tokenCreateRx = await tokenCreateTx.wait();
-  
 
-  console.log(`Created token`);
+  // token = hethers.utils.getAddressFromAccount(tAddress);
 
-  return tokenCreateRx;
+  const tokenSender = await hre.ethers.getContractAt('TokenCreateContract', cAddress, wallet);
+  const tokenSendTx = await tokenSender.transferFT();
+  // const tokenSendRx = await tokenSendTx.wait();
+
+  console.log(`Transferred tokens`);
+
+
 };
